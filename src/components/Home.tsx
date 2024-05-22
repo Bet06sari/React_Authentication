@@ -1,20 +1,31 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../redux/authSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export const Home = () => {
+  const dispatch = useDispatch();
   const [message, setMessage] = useState("You are not logged in");
+  const auth = useSelector((state: RootState) => state.auth.value);
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get("user");
-        const user = response.data;
-        setMessage(`Hi ${user.first_name} ${user.last_name}`);
+        const { data } = await axios.get("user");
+        setMessage(`Hi ${data.first_name} ${data.last_name}`);
+        dispatch(setAuth(true));
       } catch (error) {
-        console.error("You are not logged in");
+        setMessage("You are not logged in");
+        dispatch(setAuth(false));
       }
     })();
   }, []);
 
-  return <div className="container mt-5 text-center">{message}</div>;
+  return (
+    <div className="container mt-5 text-center">
+      <h3>{auth ? message : "You are not logged in"}</h3>
+    </div>
+  );
 };
