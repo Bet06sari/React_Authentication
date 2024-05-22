@@ -7,9 +7,7 @@ export const Home = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/user", {
-          withCredentials: true,
-        });
+        const response = await axios.get("user");
         const user = response.data;
         setMessage(`Hi ${user.first_name} ${user.last_name}`);
       } catch (error) {
